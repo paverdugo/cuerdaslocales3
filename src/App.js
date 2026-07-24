@@ -22,58 +22,103 @@ export default function App() {
 
   return (
     <div style={{ backgroundColor: '#1A1A1A', color: '#F4EBD4', minHeight: '100vh', fontFamily: 'system-ui, sans-serif', margin: 0, padding: 0 }}>
-      {/* NAVEGACIÓN */}
-      <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem 2rem', borderBottom: '1px solid #E5A93C' }}>
-        <h1 style={{ color: '#E5A93C', margin: 0, fontSize: '1.5rem', fontWeight: 'bold', letterSpacing: '1px' }}>
-          CUERDAS LOCALES
-        </h1>
+      
+      {/* NAVEGACIÓN CON LOGO */}
+      <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', borderBottom: '1px solid #E5A93C33', backgroundColor: '#141414' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+          {/* Si subes tu logo a public/logo.png cambia el src por '/logo.png' */}
+          <img 
+            src="/logo.jpg" 
+            alt="Cuerdas Locales Logo" 
+            onError={(e) => { e.currentTarget.style.display = 'none'; }} // Se oculta suavemente si aún no has subido la imagen
+            style={{ height: '40px', width: 'auto', objectFit: 'contain' }}
+          />
+          <h1 style={{ color: '#E5A93C', margin: 0, fontSize: '1.4rem', fontWeight: 'bold', letterSpacing: '1px' }}>
+            CUERDAS LOCALES
+          </h1>
+        </div>
         <a 
           href="#inscripcion" 
-          style={{ backgroundColor: '#E5A93C', color: '#1A1A1A', padding: '0.6rem 1.2rem', borderRadius: '6px', fontWeight: 'bold', textDecoration: 'none' }}
+          style={{ backgroundColor: '#E5A93C', color: '#1A1A1A', padding: '0.6rem 1.2rem', borderRadius: '6px', fontWeight: 'bold', textDecoration: 'none', transition: '0.2s' }}
         >
           Inscribirme
         </a>
       </nav>
 
-      {/* HERO / INICIO */}
-      <header style={{ textAlign: 'center', padding: '4rem 1.5rem 3rem', maxWidth: '800px', margin: '0 auto' }}>
-        <p style={{ color: '#E5A93C', textTransform: 'uppercase', letterSpacing: '2px', fontSize: '0.9rem', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-          Música en Vivo & Open Mic
-        </p>
-        <h2 style={{ fontSize: '2.8rem', color: '#F4EBD4', marginTop: 0, marginBottom: '1.5rem', lineHeight: '1.2' }}>
-          Toca en los mejores restaurantes usando nuestros instrumentos
-        </h2>
-        <p style={{ fontSize: '1.2rem', color: '#D1C7B7', lineHeight: '1.6', marginBottom: '2rem' }}>
-          Una experiencia única para músicos emergentes y aficionados. Nosotros ponemos el escenario, la amplificación y los instrumentos; tú pones el talento.
-        </p>
-        <a 
-          href="#inscripcion" 
-          style={{ display: 'inline-block', backgroundColor: '#E5A93C', color: '#1A1A1A', padding: '0.8rem 2rem', borderRadius: '8px', fontSize: '1.1rem', fontWeight: 'bold', textDecoration: 'none' }}
-        >
-          Asegura tu Cupo
-        </a>
+      {/* HERO / INICIO CON IMAGEN DE FONDO */}
+      <header style={{ 
+        position: 'relative',
+        backgroundImage: 'linear-gradient(rgba(26, 26, 26, 0.85), rgba(26, 26, 26, 0.95)), url("https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1200&q=80")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        textAlign: 'center', 
+        padding: '5rem 1.5rem 4rem', 
+      }}>
+        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+          <p style={{ color: '#E5A93C', textTransform: 'uppercase', letterSpacing: '2px', fontSize: '0.9rem', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+            Música en Vivo & Open Mic
+          </p>
+          <h2 style={{ fontSize: '2.8rem', color: '#F4EBD4', marginTop: 0, marginBottom: '1.5rem', lineHeight: '1.2' }}>
+            Toca en los mejores restaurantes usando nuestros instrumentos
+          </h2>
+          <p style={{ fontSize: '1.2rem', color: '#D1C7B7', lineHeight: '1.6', marginBottom: '2.5rem' }}>
+            Una experiencia única para músicos emergentes y aficionados. Nosotros ponemos el escenario, la amplificación y los instrumentos; tú pones el talento.
+          </p>
+          <a 
+            href="#inscripcion" 
+            style={{ display: 'inline-block', backgroundColor: '#E5A93C', color: '#1A1A1A', padding: '0.9rem 2.2rem', borderRadius: '8px', fontSize: '1.1rem', fontWeight: 'bold', textDecoration: 'none', boxShadow: '0 4px 14px rgba(229, 169, 60, 0.3)' }}
+          >
+            Asegura tu Cupo
+          </a>
+        </div>
       </header>
 
-      {/* CÓMO FUNCIONA */}
-      <section style={{ backgroundColor: '#242424', padding: '4rem 1.5rem', borderTop: '1px solid #333', borderBottom: '1px solid #333' }}>
+      {/* CÓMO FUNCIONA CON TARJETAS E IMÁGENES */}
+      <section style={{ backgroundColor: '#222222', padding: '4rem 1.5rem', borderTop: '1px solid #333', borderBottom: '1px solid #333' }}>
         <div style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'center' }}>
           <h3 style={{ color: '#E5A93C', fontSize: '2rem', marginBottom: '2.5rem' }}>¿Cómo funciona?</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
-            <div style={{ padding: '1.5rem', backgroundColor: '#1A1A1A', borderRadius: '8px', border: '1px solid #E5A93C33' }}>
-              <div style={{ color: '#E5A93C', fontSize: '2rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>1</div>
-              <h4 style={{ color: '#F4EBD4', fontSize: '1.2rem', marginBottom: '0.5rem' }}>Inscríbete</h4>
-              <p style={{ color: '#B5ACA0', fontSize: '0.95rem' }}>Rellena el formulario con tus datos y el horario en el que deseas participar.</p>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+            
+            {/* Tarjeta 1 */}
+            <div style={{ backgroundColor: '#1A1A1A', borderRadius: '12px', border: '1px solid #E5A93C33', overflow: 'hidden', textAlign: 'left' }}>
+              <img 
+                src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=600&q=80" 
+                alt="Formulario de inscripción" 
+                style={{ width: '100%', height: '160px', objectFit: 'cover' }}
+              />
+              <div style={{ padding: '1.5rem' }}>
+                <div style={{ color: '#E5A93C', fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.3rem' }}>1. Inscríbete</div>
+                <p style={{ color: '#B5ACA0', fontSize: '0.95rem', margin: 0 }}>Rellena el formulario con tus datos y el horario en el que deseas participar.</p>
+              </div>
             </div>
-            <div style={{ padding: '1.5rem', backgroundColor: '#1A1A1A', borderRadius: '8px', border: '1px solid #E5A93C33' }}>
-              <div style={{ color: '#E5A93C', fontSize: '2rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>2</div>
-              <h4 style={{ color: '#F4EBD4', fontSize: '1.2rem', marginBottom: '0.5rem' }}>Llega al Local</h4>
-              <p style={{ color: '#B5ACA0', fontSize: '0.95rem' }}>Te esperamos en el restaurante con todo el equipamiento listo y afinado.</p>
+
+            {/* Tarjeta 2 */}
+            <div style={{ backgroundColor: '#1A1A1A', borderRadius: '12px', border: '1px solid #E5A93C33', overflow: 'hidden', textAlign: 'left' }}>
+              <img 
+                src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80" 
+                alt="Ambiente en restaurante" 
+                style={{ width: '100%', height: '160px', objectFit: 'cover' }}
+              />
+              <div style={{ padding: '1.5rem' }}>
+                <div style={{ color: '#E5A93C', fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.3rem' }}>2. Llega al Local</div>
+                <p style={{ color: '#B5ACA0', fontSize: '0.95rem', margin: 0 }}>Te esperamos en el restaurante con todo el equipamiento listo y afinado.</p>
+              </div>
             </div>
-            <div style={{ padding: '1.5rem', backgroundColor: '#1A1A1A', borderRadius: '8px', border: '1px solid #E5A93C33' }}>
-              <div style={{ color: '#E5A93C', fontSize: '2rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>3</div>
-              <h4 style={{ color: '#F4EBD4', fontSize: '1.2rem', marginBottom: '0.5rem' }}>Toca en Vivo</h4>
-              <p style={{ color: '#B5ACA0', fontSize: '0.95rem' }}>Sube al escenario, disfruta el ambiente y comparte tu música con el público.</p>
+
+            {/* Tarjeta 3 */}
+            <div style={{ backgroundColor: '#1A1A1A', borderRadius: '12px', border: '1px solid #E5A93C33', overflow: 'hidden', textAlign: 'left' }}>
+              <img 
+                src="https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&w=600&q=80" 
+                alt="Músico tocando guitarra en vivo" 
+                style={{ width: '100%', height: '160px', objectFit: 'cover' }}
+              />
+              <div style={{ padding: '1.5rem' }}>
+                <div style={{ color: '#E5A93C', fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.3rem' }}>3. Toca en Vivo</div>
+                <p style={{ color: '#B5ACA0', fontSize: '0.95rem', margin: 0 }}>Sube al escenario, disfruta el ambiente y comparte tu música con el público.</p>
+              </div>
             </div>
+
           </div>
         </div>
       </section>
