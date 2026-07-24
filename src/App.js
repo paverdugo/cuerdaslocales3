@@ -56,7 +56,7 @@ export default function App() {
       }}>
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
           <p style={{ color: '#E5A93C', textTransform: 'uppercase', letterSpacing: '2px', fontSize: '0.9rem', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-            Música en Vivo & Open Mic
+            Open Mic
           </p>
           <h2 style={{ fontSize: '2.8rem', color: '#F4EBD4', marginTop: 0, marginBottom: '1.5rem', lineHeight: '1.2' }}>
             Toca en los mejores restaurantes usando nuestros instrumentos
