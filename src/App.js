@@ -11,7 +11,7 @@ export default function App() {
     fecha_id: '',
   });
 
-  const [fechas, setFechas] = useState<any[]>([]);
+  const [fechas, setFechas] = useState<>([]);
   const [cargandoFechas, setCargandoFechas] = useState(true);
   const [enviando, setEnviando] = useState(false);
   const [enviado, setEnviado] = useState(false);
