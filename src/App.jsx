@@ -196,17 +196,42 @@ export default function App() {
     <div style={{ backgroundColor: '#0F172A', color: '#F8FAFC', minHeight: '100vh', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
       
       {/* 1. NAVBAR SUPERIOR */}
-      <nav style={{ position: 'sticky', top: 0, zIndex: 100, backgroundColor: '#0F172ACC', backdropFilter: 'blur(10px)', borderBottom: '1px solid #334155', padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ fontWeight: '800', fontSize: '20px', color: '#F59E0B', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span>🎸</span> Cuerdas Locales
-        </div>
-        <div style={{ display: 'flex', gap: '20px', fontSize: '14px', fontWeight: '500' }}>
-          <button onClick={() => scrollToSection('inicio')} style={{ background: 'none', border: 'none', color: '#CBD5E1', cursor: 'pointer' }}>Inicio</button>
-          <button onClick={() => scrollToSection('reservar')} style={{ background: 'none', border: 'none', color: '#CBD5E1', cursor: 'pointer' }}>Reservar</button>
-          <button onClick={() => scrollToSection('locales')} style={{ background: 'none', border: 'none', color: '#CBD5E1', cursor: 'pointer' }}>Locales</button>
-          <button onClick={() => scrollToSection('faq')} style={{ background: 'none', border: 'none', color: '#CBD5E1', cursor: 'pointer' }}>FAQ</button>
-        </div>
-      </nav>
+      {/* NAVBAR SUPERIOR */}
+<nav style={{ 
+  position: 'sticky', 
+  top: 0, 
+  zIndex: 100, 
+  backgroundColor: '#0F172ACC', 
+  backdropFilter: 'blur(10px)', 
+  borderBottom: '1px solid #334155', 
+  padding: '12px 24px', 
+  display: 'flex', 
+  justify: 'space-between', 
+  alignItems: 'center' 
+}}>
+  {/* Branding / Logo */}
+  <div 
+    onClick={() => scrollToSection('inicio')} 
+    style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}
+  >
+    <img 
+      src="/logo.jpg" 
+      alt="Cuerdas Locales Logo" 
+      style={{ height: '40px', width: 'auto', objectFit: 'contain' }} 
+    />
+    <span style={{ fontWeight: '800', fontSize: '20px', color: '#F59E0B' }}>
+      Cuerdas Locales
+    </span>
+  </div>
+
+  {/* Menú de Navegación */}
+  <div style={{ display: 'flex', gap: '20px', fontSize: '14px', fontWeight: '500' }}>
+    <button onClick={() => scrollToSection('inicio')} style={{ background: 'none', border: 'none', color: '#CBD5E1', cursor: 'pointer' }}>Inicio</button>
+    <button onClick={() => scrollToSection('reservar')} style={{ background: 'none', border: 'none', color: '#CBD5E1', cursor: 'pointer' }}>Reservar</button>
+    <button onClick={() => scrollToSection('locales')} style={{ background: 'none', border: 'none', color: '#CBD5E1', cursor: 'pointer' }}>Locales</button>
+    <button onClick={() => scrollToSection('faq')} style={{ background: 'none', border: 'none', color: '#CBD5E1', cursor: 'pointer' }}>FAQ</button>
+  </div>
+</nav>
 
       {/* 2. HERO SECTION */}
       <section id="inicio" style={{ padding: '80px 20px', textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}>
