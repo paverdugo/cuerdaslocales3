@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 
+const OPCIONES_INSTRUMENTOS = [
+  'Guitarra acústica',
+  'Bajo',
+  'Piano',
+  'Micrófono (Voz)'
+];
+
 export default function App() {
   const [fechas, setFechas] = useState([]);
   const [cargandoFechas, setCargandoFechas] = useState(true);
@@ -8,34 +15,32 @@ export default function App() {
   const [errorMsg, setErrorMsg] = useState('');
   const [enviado, setEnviado] = useState(false);
 
+  // Estado del formulario con las nuevas variables
   const [formData, setFormData] = useState({
     nombre: '',
     email: '',
     telefono: '',
-    instrumento: 'Voz', // Valor por defecto
     fecha_id: '',
-    canciones: ''
+    instrumentos: [],
+    num_acompanantes: 0,
+    canciones: '',
+    mensaje_produccion: ''
   });
 
   useEffect(() => {
     async function obtenerFechas() {
       try {
         setCargandoFechas(true);
-        // Consulta exacta a tu tabla fechas_eventos
         const { data, error } = await supabase
           .from('fechas_eventos')
           .select('*')
           .eq('activo', true);
 
-        if (error) {
-          console.error('Error Supabase:', error);
-          setErrorMsg('Error al conectar con la base de datos: ' + error.message);
-          throw error;
-        }
-
+        if (error) throw error;
         if (data) setFechas(data);
       } catch (error) {
         console.error('Error al cargar fechas:', error);
+        setErrorMsg('Error al cargar las fechas disponibles.');
       } finally {
         setCargandoFechas(false);
       }
@@ -45,9 +50,19 @@ export default function App() {
   }, []);
 
   const handleChange = (e) => {
-    setFormData({ 
-      ...formData, 
-      [e.target.name]: e.target.value 
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  // Manejador para los checkboxes de instrumentos
+  const handleInstrumentoChange = (instrumento) => {
+    setFormData((prev) => {
+      const existe = prev.instrumentos.includes(instrumento);
+      const nuevosInstrumentos = existe
+        ? prev.instrumentos.filter((i) => i !== instrumento)
+        : [...prev.instrumentos, instrumento];
+
+      return { ...prev, instrumentos: nuevosInstrumentos };
     });
   };
 
@@ -56,48 +71,99 @@ export default function App() {
     setEnviando(true);
     setErrorMsg('');
 
+    if (formData.instrumentos.length === 0) {
+      setErrorMsg('Por favor selecciona al menos un instrumento o micrófono.');
+      setEnviando(false);
+      return;
+    }
+
     try {
-      // Inserción exacta en tu tabla inscripciones
-      const { data, error } = await supabase
+      // 1. Insertar la reserva en la tabla inscripciones
+      const { error: errorInscripcion } = await supabase
         .from('inscripciones')
         .insert([
           {
+            fecha_id: parseInt(formData.fecha_id),
             nombre: formData.nombre,
             email: formData.email,
             telefono: formData.telefono,
-            fecha_id: parseInt(formData.fecha_id),
-            instrumento: formData.instrumento,
-            canciones: formData.canciones
+            instrumento: formData.instrumentos.join(', '), // Mantenemos retrocompatibilidad con string
+            instrumentos: formData.instrumentos, // Guardamos lista/array
+            num_acompanantes: parseInt(formData.num_acompanantes),
+            canciones: formData.canciones,
+            mensaje_produccion: formData.mensaje_produccion
           }
         ]);
 
-      if (error) throw error;
+      if (errorInscripcion) throw errorInscripcion;
+
+      // 2. Descontar cupo disponible en la fecha correspondiente (opcional por ahora)
+      const fechaSeleccionada = fechas.find((f) => f.id === parseInt(formData.fecha_id));
+      if (fechaSeleccionada && fechaSeleccionada.cupos_disponibles > 0) {
+        await supabase
+          .from('fechas_eventos')
+          .update({ cupos_disponibles: fechaSeleccionada.cupos_disponibles - 1 })
+          .eq('id', fechaSeleccionada.id);
+      }
+
       setEnviado(true);
     } catch (error) {
-      console.error('Error al guardar inscripción:', error);
+      console.error('Error al guardar reserva:', error);
       setErrorMsg('Ocurrió un error al guardar tu reserva: ' + (error.message || 'Intenta nuevamente.'));
     } finally {
       setEnviando(false);
     }
   };
 
+  const reiniciarFormulario = () => {
+    setEnviado(false);
+    setFormData({
+      nombre: '',
+      email: '',
+      telefono: '',
+      fecha_id: '',
+      instrumentos: [],
+      num_acompanantes: 0,
+      canciones: '',
+      mensaje_produccion: ''
+    });
+  };
+
   return (
     <div style={{ backgroundColor: '#1A1A1A', color: '#F4EBD4', minHeight: '100vh', padding: '20px', fontFamily: 'sans-serif' }}>
       <header style={{ textAlign: 'center', marginBottom: '40px' }}>
-        <h1>Cuerdas Locales</h1>
-        <p>Reserva tu espacio para cantar con nosotros</p>
+        <h1>Cuerdas Locales 🎸</h1>
+        <p>Reserva tu espacio para cantar y compartir en vivo</p>
       </header>
 
       <main style={{ maxWidth: '600px', margin: '0 auto', backgroundColor: '#2A2A2A', padding: '30px', borderRadius: '8px' }}>
         {enviado ? (
           <div style={{ textAlign: 'center', color: '#4CAF50' }}>
             <h2>¡Reserva registrada con éxito! 🎉</h2>
-            <p>Te enviaremos los detalles a tu correo electrónico.</p>
+            <p style={{ color: '#F4EBD4', marginTop: '15px' }}>
+              Te esperamos. Hemos registrado tus instrumentos y número de acompañantes.
+            </p>
+            <button
+              onClick={reiniciarFormulario}
+              style={{
+                marginTop: '25px',
+                backgroundColor: '#F4EBD4',
+                color: '#1A1A1A',
+                padding: '10px 20px',
+                border: 'none',
+                borderRadius: '4px',
+                fontWeight: 'bold',
+                cursor: 'pointer'
+              }}
+            >
+              Realizar otra reserva
+            </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+            {/* DATOS PERSONALES */}
             <div>
-              <label style={{ display: 'block', marginBottom: '5px' }}>Nombre completo:</label>
+              <label style={{ display: 'block', marginBottom: '5px' }}>Nombre completo *:</label>
               <input
                 type="text"
                 name="nombre"
@@ -108,44 +174,34 @@ export default function App() {
               />
             </div>
 
-            <div>
-              <label style={{ display: 'block', marginBottom: '5px' }}>Correo electrónico:</label>
-              <input
-                type="email"
-                name="email"
-                required
-                value={formData.email}
-                onChange={handleChange}
-                style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #444', backgroundColor: '#333', color: '#fff' }}
-              />
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <div style={{ flex: 1 }}>
+                <label style={{ display: 'block', marginBottom: '5px' }}>Email *:</label>
+                <input
+                  type="email"
+                  name="email"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                  style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #444', backgroundColor: '#333', color: '#fff' }}
+                />
+              </div>
+              <div style={{ flex: 1 }}>
+                <label style={{ display: 'block', marginBottom: '5px' }}>Teléfono / WhatsApp *:</label>
+                <input
+                  type="tel"
+                  name="telefono"
+                  required
+                  value={formData.telefono}
+                  onChange={handleChange}
+                  style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #444', backgroundColor: '#333', color: '#fff' }}
+                />
+              </div>
             </div>
 
+            {/* SELECCIÓN DE FECHA */}
             <div>
-              <label style={{ display: 'block', marginBottom: '5px' }}>Teléfono / WhatsApp:</label>
-              <input
-                type="tel"
-                name="telefono"
-                value={formData.telefono}
-                onChange={handleChange}
-                style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #444', backgroundColor: '#333', color: '#fff' }}
-              />
-            </div>
-
-            <div>
-              <label style={{ display: 'block', marginBottom: '5px' }}>¿Qué vas a cantar / tocar?:</label>
-              <input
-                type="text"
-                name="instrumento"
-                required
-                placeholder="Ej: Voz, Guitarra y Voz..."
-                value={formData.instrumento}
-                onChange={handleChange}
-                style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #444', backgroundColor: '#333', color: '#fff' }}
-              />
-            </div>
-
-            <div>
-              <label style={{ display: 'block', marginBottom: '5px' }}>Selecciona una fecha / evento:</label>
+              <label style={{ display: 'block', marginBottom: '5px' }}>Selecciona una fecha / evento *:</label>
               <select
                 name="fecha_id"
                 required
@@ -158,26 +214,79 @@ export default function App() {
                   <option disabled>Cargando fechas disponibles...</option>
                 ) : (
                   fechas.map((f) => (
-                    <option key={f.id} value={f.id}>
-                      {f.fecha} a las {f.hora} - {f.lugar} ({f.cupos_disponibles} cupos)
+                    <option key={f.id} value={f.id} disabled={f.cupos_disponibles <= 0}>
+                      {f.fecha} a las {f.hora} - {f.lugar} ({f.cupos_disponibles > 0 ? `${f.cupos_disponibles} cupos` : 'AGOTADO'})
                     </option>
                   ))
                 )}
               </select>
             </div>
 
+            {/* CHECKBOXES INSTRUMENTOS */}
             <div>
-              <label style={{ display: 'block', marginBottom: '5px' }}>Canciones que te gustaría cantar:</label>
+              <label style={{ display: 'block', marginBottom: '8px' }}>
+                Instrumentos o equipos que vas a utilizar (selecciona al menos uno) *:
+              </label>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', backgroundColor: '#222', padding: '12px', borderRadius: '4px' }}>
+                {OPCIONES_INSTRUMENTOS.map((inst) => (
+                  <label key={inst} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                    <input
+                      type="checkbox"
+                      checked={formData.instrumentos.includes(inst)}
+                      onChange={() => handleInstrumentoChange(inst)}
+                    />
+                    <span>{inst}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* NÚMERO DE ACOMPAÑANTES */}
+            <div>
+              <label style={{ display: 'block', marginBottom: '5px' }}>
+                ¿Cuántos acompañantes vendrán contigo? (Sin contarte a ti):
+              </label>
+              <input
+                type="number"
+                name="num_acompanantes"
+                min="0"
+                max="10"
+                value={formData.num_acompanantes}
+                onChange={handleChange}
+                style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #444', backgroundColor: '#333', color: '#fff' }}
+              />
+              <small style={{ color: '#aaa', marginTop: '4px', display: 'block' }}>
+                Esta información servirá para preparar las mesas en el restaurante.
+              </small>
+            </div>
+
+            {/* CANCIONES */}
+            <div>
+              <label style={{ display: 'block', marginBottom: '5px' }}>Repertorio o canciones propuestas:</label>
               <textarea
                 name="canciones"
-                rows="3"
+                rows="2"
+                placeholder="Ej: Te regalo - Carla Morrison, Flaca - Andrés Calamaro"
                 value={formData.canciones}
                 onChange={handleChange}
                 style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #444', backgroundColor: '#333', color: '#fff' }}
               />
             </div>
 
-            {errorMsg && <p style={{ color: '#FF5252' }}>{errorMsg}</p>}
+            {/* MENSAJE A PRODUCCIÓN */}
+            <div>
+              <label style={{ display: 'block', marginBottom: '5px' }}>Mensaje o nota para el equipo de producción:</label>
+              <textarea
+                name="mensaje_produccion"
+                rows="2"
+                placeholder="Ej: Llego 15 min antes para probar sonido / Necesito conectar una pista por plug..."
+                value={formData.mensaje_produccion}
+                onChange={handleChange}
+                style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #444', backgroundColor: '#333', color: '#fff' }}
+              />
+            </div>
+
+            {errorMsg && <p style={{ color: '#FF5252', fontWeight: 'bold' }}>{errorMsg}</p>}
 
             <button
               type="submit"
@@ -185,15 +294,16 @@ export default function App() {
               style={{
                 backgroundColor: '#F4EBD4',
                 color: '#1A1A1A',
-                padding: '12px',
+                padding: '14px',
                 border: 'none',
                 borderRadius: '4px',
                 fontWeight: 'bold',
+                fontSize: '16px',
                 cursor: enviando ? 'not-allowed' : 'pointer',
                 marginTop: '10px'
               }}
             >
-              {enviando ? 'Enviando reserva...' : 'Confirmar Reserva'}
+              {enviando ? 'Guardando reserva...' : 'Confirmar Reserva'}
             </button>
           </form>
         )}
