@@ -138,7 +138,7 @@ export default function App() {
                 ) : (
                   fechas.map((f) => (
                     <option key={f.id} value={f.id}>
-                      {f.fecha || f.descripcion || f.nombre || `Sesión ${f.id}`}
+                      {f.fecha} ({f.cupos_disponibles} cupos)
                     </option>
                   ))
                 )}
