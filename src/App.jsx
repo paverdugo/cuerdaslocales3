@@ -12,20 +12,27 @@ export default function App() {
     nombre: '',
     email: '',
     telefono: '',
+    instrumento: 'Voz', // Valor por defecto
     fecha_id: '',
-    mensaje: ''
+    canciones: ''
   });
 
   useEffect(() => {
     async function obtenerFechas() {
       try {
         setCargandoFechas(true);
-        // Ajusta 'fechas_disponibles' según el nombre real de tu tabla en Supabase
+        // Consulta exacta a tu tabla fechas_eventos
         const { data, error } = await supabase
-          .from('fechas_disponibles')
-          .select('*');
+          .from('fechas_eventos')
+          .select('*')
+          .eq('activo', true);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Error Supabase:', error);
+          setErrorMsg('Error al conectar con la base de datos: ' + error.message);
+          throw error;
+        }
+
         if (data) setFechas(data);
       } catch (error) {
         console.error('Error al cargar fechas:', error);
@@ -50,16 +57,17 @@ export default function App() {
     setErrorMsg('');
 
     try {
-      // Ajusta 'reservas' según el nombre real de tu tabla en Supabase
+      // Inserción exacta en tu tabla inscripciones
       const { data, error } = await supabase
-        .from('reservas')
+        .from('inscripciones')
         .insert([
           {
             nombre: formData.nombre,
             email: formData.email,
             telefono: formData.telefono,
-            fecha_id: formData.fecha_id,
-            mensaje: formData.mensaje
+            fecha_id: parseInt(formData.fecha_id),
+            instrumento: formData.instrumento,
+            canciones: formData.canciones
           }
         ]);
 
@@ -67,7 +75,7 @@ export default function App() {
       setEnviado(true);
     } catch (error) {
       console.error('Error al guardar inscripción:', error);
-      setErrorMsg('Ocurrió un error al guardar tu inscripción. Intenta nuevamente.');
+      setErrorMsg('Ocurrió un error al guardar tu reserva: ' + (error.message || 'Intenta nuevamente.'));
     } finally {
       setEnviando(false);
     }
@@ -124,7 +132,20 @@ export default function App() {
             </div>
 
             <div>
-              <label style={{ display: 'block', marginBottom: '5px' }}>Selecciona una fecha:</label>
+              <label style={{ display: 'block', marginBottom: '5px' }}>¿Qué vas a cantar / tocar?:</label>
+              <input
+                type="text"
+                name="instrumento"
+                required
+                placeholder="Ej: Voz, Guitarra y Voz..."
+                value={formData.instrumento}
+                onChange={handleChange}
+                style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #444', backgroundColor: '#333', color: '#fff' }}
+              />
+            </div>
+
+            <div>
+              <label style={{ display: 'block', marginBottom: '5px' }}>Selecciona una fecha / evento:</label>
               <select
                 name="fecha_id"
                 required
@@ -132,13 +153,13 @@ export default function App() {
                 onChange={handleChange}
                 style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #444', backgroundColor: '#333', color: '#fff' }}
               >
-                <option value="">-- Selecciona un horario --</option>
+                <option value="">-- Selecciona una fecha --</option>
                 {cargandoFechas ? (
-                  <option disabled>Cargando fechas...</option>
+                  <option disabled>Cargando fechas disponibles...</option>
                 ) : (
                   fechas.map((f) => (
                     <option key={f.id} value={f.id}>
-                      {f.fecha} ({f.cupos_disponibles} cupos)
+                      {f.fecha} a las {f.hora} - {f.lugar} ({f.cupos_disponibles} cupos)
                     </option>
                   ))
                 )}
@@ -146,11 +167,11 @@ export default function App() {
             </div>
 
             <div>
-              <label style={{ display: 'block', marginBottom: '5px' }}>Comentarios o canción propuesta:</label>
+              <label style={{ display: 'block', marginBottom: '5px' }}>Canciones que te gustaría cantar:</label>
               <textarea
-                name="mensaje"
+                name="canciones"
                 rows="3"
-                value={formData.mensaje}
+                value={formData.canciones}
                 onChange={handleChange}
                 style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #444', backgroundColor: '#333', color: '#fff' }}
               />
