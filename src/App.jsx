@@ -70,46 +70,62 @@ export default function App() {
     e.preventDefault();
     setEnviando(true);
     setErrorMsg('');
-
+  
     if (formData.instrumentos.length === 0) {
       setErrorMsg('Por favor selecciona al menos un instrumento o micrófono.');
       setEnviando(false);
       return;
     }
-
+  
+    const fechaIdInt = parseInt(formData.fecha_id);
+    const fechaSeleccionada = fechas.find((f) => f.id === fechaIdInt);
+  
+    if (!fechaSeleccionada || fechaSeleccionada.cupos_disponibles <= 0) {
+      setErrorMsg('Lo sentimos, esta fecha ya no tiene cupos disponibles.');
+      setEnviando(false);
+      return;
+    }
+  
     try {
-      // 1. Insertar la reserva en la tabla inscripciones
+      // 1. Guardar la inscripción
       const { error: errorInscripcion } = await supabase
         .from('inscripciones')
         .insert([
           {
-            fecha_id: parseInt(formData.fecha_id),
+            fecha_id: fechaIdInt,
             nombre: formData.nombre,
             email: formData.email,
             telefono: formData.telefono,
-            instrumento: formData.instrumentos.join(', '), // Mantenemos retrocompatibilidad con string
-            instrumentos: formData.instrumentos, // Guardamos lista/array
+            instrumento: formData.instrumentos.join(', '),
+            instrumentos: formData.instrumentos,
             num_acompanantes: parseInt(formData.num_acompanantes),
             canciones: formData.canciones,
             mensaje_produccion: formData.mensaje_produccion
           }
         ]);
-
+  
       if (errorInscripcion) throw errorInscripcion;
-
-      // 2. Descontar cupo disponible en la fecha correspondiente (opcional por ahora)
-      const fechaSeleccionada = fechas.find((f) => f.id === parseInt(formData.fecha_id));
-      if (fechaSeleccionada && fechaSeleccionada.cupos_disponibles > 0) {
-        await supabase
-          .from('fechas_eventos')
-          .update({ cupos_disponibles: fechaSeleccionada.cupos_disponibles - 1 })
-          .eq('id', fechaSeleccionada.id);
-      }
-
+  
+      // 2. Descontar 1 cupo en Supabase
+      const nuevosCupos = fechaSeleccionada.cupos_disponibles - 1;
+      const { error: errorUpdate } = await supabase
+        .from('fechas_eventos')
+        .update({ cupos_disponibles: nuevosCupos })
+        .eq('id', fechaIdInt);
+  
+      if (errorUpdate) throw errorUpdate;
+  
+      // 3. Actualizar el estado local para que se refleje de inmediato en la pantalla
+      setFechas((prevFechas) =>
+        prevFechas.map((f) =>
+          f.id === fechaIdInt ? { ...f, cupos_disponibles: nuevosCupos } : f
+        )
+      );
+  
       setEnviado(true);
     } catch (error) {
       console.error('Error al guardar reserva:', error);
-      setErrorMsg('Ocurrió un error al guardar tu reserva: ' + (error.message || 'Intenta nuevamente.'));
+      setErrorMsg('Ocurrió un error: ' + (error.message || 'Intenta nuevamente.'));
     } finally {
       setEnviando(false);
     }
@@ -203,23 +219,29 @@ export default function App() {
             <div>
               <label style={{ display: 'block', marginBottom: '5px' }}>Selecciona una fecha / evento *:</label>
               <select
-                name="fecha_id"
-                required
-                value={formData.fecha_id}
-                onChange={handleChange}
-                style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #444', backgroundColor: '#333', color: '#fff' }}
-              >
-                <option value="">-- Selecciona una fecha --</option>
-                {cargandoFechas ? (
-                  <option disabled>Cargando fechas disponibles...</option>
-                ) : (
-                  fechas.map((f) => (
-                    <option key={f.id} value={f.id} disabled={f.cupos_disponibles <= 0}>
-                      {f.fecha} a las {f.hora} - {f.lugar} ({f.cupos_disponibles > 0 ? `${f.cupos_disponibles} cupos` : 'AGOTADO'})
-                    </option>
-                  ))
-                )}
-              </select>
+  name="fecha_id"
+  required
+  value={formData.fecha_id}
+  onChange={handleChange}
+  style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #444', backgroundColor: '#333', color: '#fff' }}
+>
+  <option value="">-- Selecciona una fecha --</option>
+  {cargandoFechas ? (
+    <option disabled>Cargando fechas disponibles...</option>
+  ) : (
+    fechas.map((f) => {
+      // Tomamos cupos_totales (si no existe o viene null, usamos 8 por defecto)
+      const totales = f.cupos_totales || 8;
+      const disponibles = f.cupos_disponibles;
+
+      return (
+        <option key={f.id} value={f.id} disabled={disponibles <= 0}>
+          {f.fecha} a las {f.hora} - {f.lugar} ({disponibles > 0 ? `${disponibles} de ${totales} cupos disponibles` : 'AGOTADO'})
+        </option>
+      );
+    })
+  )}
+</select>
             </div>
 
             {/* CHECKBOXES INSTRUMENTOS */}
