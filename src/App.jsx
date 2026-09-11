@@ -168,14 +168,14 @@ export default function App() {
     }
   };
 
-  // Estilos en línea reutilizables
+  // Estilos en línea reutilizables (Paleta Sol Warm / Clara)
   const inputStyle = {
     width: '100%',
     padding: '12px 14px',
-    borderRadius: '8px',
-    border: '1px solid #334155',
-    backgroundColor: '#0F172A',
-    color: '#F8FAFC',
+    borderRadius: '10px',
+    border: '1px solid #E4E4E7',
+    backgroundColor: '#FFFFFF',
+    color: '#18181B',
     fontSize: '14px',
     outline: 'none',
     boxSizing: 'border-box'
@@ -186,76 +186,74 @@ export default function App() {
     marginBottom: '6px',
     fontSize: '14px',
     fontWeight: '600',
-    color: '#CBD5E1'
+    color: '#3F3F46'
   };
 
-  // Fecha seleccionada actualmente en el formulario
   const fechaSeleccionadaObj = fechas.find((f) => f.id === parseInt(formData.fecha_id));
 
   return (
-    <div style={{ backgroundColor: '#0F172A', color: '#F8FAFC', minHeight: '100vh', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+    <div style={{ backgroundColor: '#FFFDF8', color: '#18181B', minHeight: '100vh', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
       
       {/* 1. NAVBAR SUPERIOR */}
-      {/* NAVBAR SUPERIOR */}
-<nav style={{ 
-  position: 'sticky', 
-  top: 0, 
-  zIndex: 100, 
-  backgroundColor: '#0F172ACC', 
-  backdropFilter: 'blur(10px)', 
-  borderBottom: '1px solid #334155', 
-  padding: '12px 24px', 
-  display: 'flex', 
-  justify: 'space-between', 
-  alignItems: 'center' 
-}}>
-  {/* Branding / Logo */}
-  <div 
-    onClick={() => scrollToSection('inicio')} 
-    style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}
-  >
-    <img 
-      src="/logo.jpg" 
-      alt="Cuerdas Locales Logo" 
-      style={{ height: '40px', width: 'auto', objectFit: 'contain' }} 
-    />
-    <span style={{ fontWeight: '800', fontSize: '20px', color: '#F59E0B' }}>
-      Cuerdas Locales
-    </span>
-  </div>
+      <nav style={{ 
+        position: 'sticky', 
+        top: 0, 
+        zIndex: 100, 
+        backgroundColor: '#FFFFFFEE', 
+        backdropFilter: 'blur(10px)', 
+        borderBottom: '1px solid #FFEDD5', 
+        padding: '12px 24px', 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.03)'
+      }}>
+        <div 
+          onClick={() => scrollToSection('inicio')} 
+          style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}
+        >
+          <img 
+            src="/logo.jpg" 
+            alt="Cuerdas Locales Logo" 
+            style={{ height: '40px', width: 'auto', objectFit: 'contain' }} 
+          />
+          <span style={{ fontWeight: '800', fontSize: '20px', color: '#18181B', letterSpacing: '-0.5px' }}>
+            Cuerdas <span style={{ color: '#FF6B35' }}>Locales</span>
+          </span>
+        </div>
 
-  {/* Menú de Navegación */}
-  <div style={{ display: 'flex', gap: '20px', fontSize: '14px', fontWeight: '500' }}>
-    <button onClick={() => scrollToSection('inicio')} style={{ background: 'none', border: 'none', color: '#CBD5E1', cursor: 'pointer' }}>Inicio</button>
-    <button onClick={() => scrollToSection('reservar')} style={{ background: 'none', border: 'none', color: '#CBD5E1', cursor: 'pointer' }}>Reservar</button>
-    <button onClick={() => scrollToSection('locales')} style={{ background: 'none', border: 'none', color: '#CBD5E1', cursor: 'pointer' }}>Locales</button>
-    <button onClick={() => scrollToSection('faq')} style={{ background: 'none', border: 'none', color: '#CBD5E1', cursor: 'pointer' }}>FAQ</button>
-  </div>
-</nav>
+        <div style={{ display: 'flex', gap: '20px', fontSize: '14px', fontWeight: '600' }}>
+          <button onClick={() => scrollToSection('inicio')} style={{ background: 'none', border: 'none', color: '#52525B', cursor: 'pointer' }}>Inicio</button>
+          <button onClick={() => scrollToSection('reservar')} style={{ background: 'none', border: 'none', color: '#52525B', cursor: 'pointer' }}>Reservar</button>
+          <button onClick={() => scrollToSection('locales')} style={{ background: 'none', border: 'none', color: '#52525B', cursor: 'pointer' }}>Locales</button>
+          <button onClick={() => scrollToSection('faq')} style={{ background: 'none', border: 'none', color: '#52525B', cursor: 'pointer' }}>FAQ</button>
+        </div>
+      </nav>
 
       {/* 2. HERO SECTION */}
       <section id="inicio" style={{ padding: '80px 20px', textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}>
-        <div style={{ display: 'inline-block', backgroundColor: '#F59E0B20', color: '#F59E0B', padding: '6px 16px', borderRadius: '20px', fontSize: '13px', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '16px' }}>
+        <div style={{ display: 'inline-block', backgroundColor: '#FFEDD5', color: '#FF6B35', padding: '6px 16px', borderRadius: '20px', fontSize: '13px', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '16px' }}>
           Música en Vivo & Jam Sessions
         </div>
-        <h1 style={{ fontSize: '48px', fontWeight: '900', lineHeight: '1.1', marginBottom: '20px', letterSpacing: '-1px' }}>
-          Tu voz y tu guitarra tienen lugar en el escenario.
+        <h1 style={{ fontSize: '48px', fontWeight: '900', lineHeight: '1.15', marginBottom: '20px', letterSpacing: '-1px', color: '#18181B' }}>
+          La alegría de cantarle a los <span style={{ color: '#FF6B35' }}>amigos</span>.
         </h1>
-        <p style={{ fontSize: '18px', color: '#94A3B8', lineHeight: '1.6', marginBottom: '32px', maxWidth: '650px', margin: '0 auto 32px auto' }}>
+        <p style={{ fontSize: '18px', color: '#52525B', lineHeight: '1.6', marginBottom: '32px', maxWidth: '650px', margin: '0 auto 32px auto' }}>
           Cuerdas Locales lleva la música acústica en vivo a distintos restaurantes y bares cada mes. Reserva tu espacio de tiempo, invita a tus amigos y comparte lo que más te apasiona.
         </p>
         <button
           onClick={() => scrollToSection('reservar')}
           style={{
-            backgroundColor: '#F59E0B',
-            color: '#0F172A',
+            backgroundColor: '#FF6B35',
+            color: '#FFFFFF',
             padding: '16px 36px',
             border: 'none',
-            borderRadius: '10px',
+            borderRadius: '12px',
             fontWeight: '800',
             fontSize: '16px',
             cursor: 'pointer',
-            boxShadow: '0 4px 20px rgba(245, 158, 11, 0.3)'
+            boxShadow: '0 10px 25px -5px rgba(255, 107, 53, 0.3)',
+            transition: 'all 0.2s'
           }}
         >
           Reservar Mi Cupo Ahora 🎙️
@@ -263,30 +261,30 @@ export default function App() {
       </section>
 
       {/* 3. FORMULARIO DE RESERVAS */}
-      <section id="reservar" style={{ padding: '60px 20px', backgroundColor: '#0B1120' }}>
-        <div style={{ maxWidth: '600px', margin: '0 auto', backgroundColor: '#1E293B', padding: '36px', borderRadius: '20px', border: '1px solid #334155', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)' }}>
-          <h2 style={{ fontSize: '28px', fontWeight: '800', margin: '0 0 8px 0', textAlign: 'center' }}>
+      <section id="reservar" style={{ padding: '60px 20px', backgroundColor: '#FFFDF8' }}>
+        <div style={{ maxWidth: '600px', margin: '0 auto', backgroundColor: '#FFFFFF', padding: '36px', borderRadius: '24px', border: '1px solid #FFEDD5', boxShadow: '0 20px 40px -15px rgba(255, 107, 53, 0.08)' }}>
+          <h2 style={{ fontSize: '28px', fontWeight: '800', margin: '0 0 8px 0', textAlign: 'center', color: '#18181B' }}>
             Inscripción de Músicos
           </h2>
-          <p style={{ color: '#94A3B8', fontSize: '14px', textAlign: 'center', marginBottom: '28px' }}>
+          <p style={{ color: '#71717A', fontSize: '14px', textAlign: 'center', marginBottom: '28px' }}>
             Selecciona la fecha, el local socio y asegura tu bloque de presentación.
           </p>
 
           {enviado ? (
             <div style={{ textAlign: 'center', padding: '20px 0' }}>
               <div style={{ fontSize: '56px', marginBottom: '16px' }}>🎉</div>
-              <h3 style={{ color: '#10B981', fontSize: '24px', margin: '0 0 12px 0' }}>¡Reserva Confirmada!</h3>
-              <p style={{ color: '#94A3B8', fontSize: '15px', lineHeight: '1.5', margin: '0 0 24px 0' }}>
+              <h3 style={{ color: '#10B981', fontSize: '24px', margin: '0 0 12px 0', fontWeight: '800' }}>¡Reserva Confirmada!</h3>
+              <p style={{ color: '#52525B', fontSize: '15px', lineHeight: '1.5', margin: '0 0 24px 0' }}>
                 Tu cupo ha sido guardado exitosamente. Te esperamos en la fecha y local seleccionados.
               </p>
               <button
                 onClick={reiniciarFormulario}
                 style={{
-                  backgroundColor: '#F59E0B',
-                  color: '#0F172A',
+                  backgroundColor: '#FF6B35',
+                  color: '#FFFFFF',
                   padding: '12px 24px',
                   border: 'none',
-                  borderRadius: '8px',
+                  borderRadius: '10px',
                   fontWeight: '700',
                   cursor: 'pointer'
                 }}
@@ -362,7 +360,7 @@ export default function App() {
                   )}
                 </select>
                 {fechaSeleccionadaObj && (
-                  <div style={{ marginTop: '10px', padding: '10px 14px', backgroundColor: '#0F172A', borderRadius: '8px', border: '1px solid #334155', fontSize: '13px', color: '#F59E0B' }}>
+                  <div style={{ marginTop: '10px', padding: '10px 14px', backgroundColor: '#FFFBEB', borderRadius: '10px', border: '1px solid #FDE68A', fontSize: '13px', color: '#D97706' }}>
                     📍 <strong>Lugar del evento:</strong> {fechaSeleccionadaObj.lugar}
                   </div>
                 )}
@@ -370,16 +368,16 @@ export default function App() {
 
               <div>
                 <label style={labelStyle}>Instrumentos / Equipos a utilizar *</label>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', backgroundColor: '#0F172A', padding: '14px', borderRadius: '8px', border: '1px solid #334155' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', backgroundColor: '#FAFAFA', padding: '14px', borderRadius: '10px', border: '1px solid #E4E4E7' }}>
                   {OPCIONES_INSTRUMENTOS.map((inst) => {
                     const check = formData.instrumentos.includes(inst);
                     return (
-                      <label key={inst} style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontSize: '13px', color: check ? '#F8FAFC' : '#94A3B8' }}>
+                      <label key={inst} style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontSize: '13px', color: check ? '#18181B' : '#71717A', fontWeight: check ? '600' : '400' }}>
                         <input
                           type="checkbox"
                           checked={check}
                           onChange={() => handleInstrumentoChange(inst)}
-                          style={{ accentColor: '#F59E0B', width: '16px', height: '16px', cursor: 'pointer' }}
+                          style={{ accentColor: '#FF6B35', width: '16px', height: '16px', cursor: 'pointer' }}
                         />
                         <span>{inst}</span>
                       </label>
@@ -426,7 +424,7 @@ export default function App() {
               </div>
 
               {errorMsg && (
-                <div style={{ backgroundColor: '#EF444415', border: '1px solid #EF4444', color: '#F87171', padding: '12px', borderRadius: '8px', fontSize: '14px' }}>
+                <div style={{ backgroundColor: '#FEF2F2', border: '1px solid #FCA5A5', color: '#DC2626', padding: '12px', borderRadius: '10px', fontSize: '14px' }}>
                   {errorMsg}
                 </div>
               )}
@@ -435,15 +433,15 @@ export default function App() {
                 type="submit"
                 disabled={enviando}
                 style={{
-                  backgroundColor: '#F59E0B',
-                  color: '#0F172A',
+                  backgroundColor: '#FF6B35',
+                  color: '#FFFFFF',
                   padding: '14px',
                   border: 'none',
-                  borderRadius: '8px',
+                  borderRadius: '10px',
                   fontWeight: '700',
                   fontSize: '16px',
                   cursor: enviando ? 'not-allowed' : 'pointer',
-                  boxShadow: '0 4px 12px rgba(245, 158, 11, 0.25)',
+                  boxShadow: '0 4px 14px rgba(255, 107, 53, 0.25)',
                   marginTop: '10px'
                 }}
               >
@@ -457,42 +455,42 @@ export default function App() {
       {/* 4. SECCIÓN MODALIDAD ITINERANTE & LOCALES SOCIOS */}
       <section id="locales" style={{ padding: '80px 20px', maxWidth: '900px', margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-          <h2 style={{ fontSize: '32px', fontWeight: '800', marginBottom: '12px' }}>
+          <h2 style={{ fontSize: '32px', fontWeight: '800', marginBottom: '12px', color: '#18181B' }}>
             Un escenario itinerante 📍
           </h2>
-          <p style={{ color: '#94A3B8', fontSize: '16px', maxWidth: '600px', margin: '0 auto' }}>
-            Cuerdas Locales no tiene un local fijo. Nos aliamoss con los mejores restaurantes, bares y espacios culturales de la ciudad para crear experiencias únicas en cada edición.
+          <p style={{ color: '#52525B', fontSize: '16px', maxWidth: '600px', margin: '0 auto' }}>
+            Cuerdas Locales no tiene un local fijo. Nos aliamos con los mejores restaurantes, bares y espacios culturales de la ciudad para crear experiencias únicas en cada edición.
           </p>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '24px' }}>
-          <div style={{ backgroundColor: '#1E293B', padding: '24px', borderRadius: '16px', border: '1px solid #334155' }}>
+          <div style={{ backgroundColor: '#FFFFFF', padding: '24px', borderRadius: '20px', border: '1px solid #FFEDD5', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
             <div style={{ fontSize: '32px', marginBottom: '12px' }}>🍽️</div>
-            <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '8px' }}>Gastronomía & Coctelería</h3>
-            <p style={{ color: '#94A3B8', fontSize: '14px', margin: 0 }}>Cada local socio ofrece su carta para que tus acompañantes disfruten de una excelente cena mientras escuchan música en vivo.</p>
+            <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '8px', color: '#18181B' }}>Gastronomía & Coctelería</h3>
+            <p style={{ color: '#71717A', fontSize: '14px', margin: 0 }}>Cada local socio ofrece su carta para que tus acompañantes disfruten de una excelente cena mientras escuchan música en vivo.</p>
           </div>
 
-          <div style={{ backgroundColor: '#1E293B', padding: '24px', borderRadius: '16px', border: '1px solid #334155' }}>
+          <div style={{ backgroundColor: '#FFFFFF', padding: '24px', borderRadius: '20px', border: '1px solid #FFEDD5', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
             <div style={{ fontSize: '32px', marginBottom: '12px' }}>🔊</div>
-            <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '8px' }}>Sonido Profesional</h3>
-            <p style={{ color: '#94A3B8', fontSize: '14px', margin: 0 }}>Llevamos y preparamos el equipo acústico necesario para que te escuches increíble sin complicaciones técnicas.</p>
+            <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '8px', color: '#18181B' }}>Sonido Profesional</h3>
+            <p style={{ color: '#71717A', fontSize: '14px', margin: 0 }}>Llevamos y preparamos el equipo acústico necesario para que te escuches increíble sin complicaciones técnicas.</p>
           </div>
 
-          <div style={{ backgroundColor: '#1E293B', padding: '24px', borderRadius: '16px', border: '1px solid #334155' }}>
+          <div style={{ backgroundColor: '#FFFFFF', padding: '24px', borderRadius: '20px', border: '1px solid #FFEDD5', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
             <div style={{ fontSize: '32px', marginBottom: '12px' }}>🤝</div>
-            <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '8px' }}>Comunidad Musicial</h3>
-            <p style={{ color: '#94A3B8', fontSize: '14px', margin: 0 }}>Conoce a otros músicos de la zona, conecta para futuros proyectos y comparte el escenario en un ambiente cercano y amigable.</p>
+            <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '8px', color: '#18181B' }}>Comunidad Musical</h3>
+            <p style={{ color: '#71717A', fontSize: '14px', margin: 0 }}>Conoce a otros músicos de la zona, conecta para futuros proyectos y comparte el escenario en un ambiente cercano y amigable.</p>
           </div>
         </div>
       </section>
 
       {/* 5. SECCIÓN FAQ */}
-      <section id="faq" style={{ padding: '80px 20px', backgroundColor: '#0B1120' }}>
+      <section id="faq" style={{ padding: '80px 20px', backgroundColor: '#FFFDF8' }}>
         <div style={{ maxWidth: '750px', margin: '0 auto' }}>
-          <h2 style={{ fontSize: '32px', fontWeight: '800', textAlign: 'center', marginBottom: '12px' }}>
+          <h2 style={{ fontSize: '32px', fontWeight: '800', textAlign: 'center', marginBottom: '12px', color: '#18181B' }}>
             Preguntas Frecuentes
           </h2>
-          <p style={{ color: '#94A3B8', fontSize: '16px', textAlign: 'center', marginBottom: '40px' }}>
+          <p style={{ color: '#52525B', fontSize: '16px', textAlign: 'center', marginBottom: '40px' }}>
             Todo lo que necesitas saber antes de subir al escenario.
           </p>
 
@@ -504,20 +502,21 @@ export default function App() {
                   key={idx}
                   onClick={() => setFaqAbierto(isOpen ? null : idx)}
                   style={{
-                    backgroundColor: '#1E293B',
-                    borderRadius: '12px',
-                    border: '1px solid #334155',
+                    backgroundColor: '#FFFFFF',
+                    borderRadius: '16px',
+                    border: '1px solid #E4E4E7',
                     padding: '20px',
                     cursor: 'pointer',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
                     transition: 'all 0.2s ease'
                   }}
                 >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontWeight: '700', fontSize: '16px', color: isOpen ? '#F59E0B' : '#F8FAFC' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontWeight: '700', fontSize: '16px', color: isOpen ? '#FF6B35' : '#18181B' }}>
                     <span>{faq.q}</span>
-                    <span style={{ fontSize: '20px' }}>{isOpen ? '−' : '+'}</span>
+                    <span style={{ fontSize: '20px', color: '#FF6B35' }}>{isOpen ? '−' : '+'}</span>
                   </div>
                   {isOpen && (
-                    <p style={{ marginTop: '12px', color: '#94A3B8', fontSize: '14px', lineHeight: '1.6', margin: '12px 0 0 0' }}>
+                    <p style={{ marginTop: '12px', color: '#52525B', fontSize: '14px', lineHeight: '1.6', margin: '12px 0 0 0' }}>
                       {faq.a}
                     </p>
                   )}
@@ -529,7 +528,7 @@ export default function App() {
       </section>
 
       {/* 6. FOOTER */}
-      <footer style={{ borderTop: '1px solid #334155', padding: '32px 20px', textAlign: 'center', color: '#64748B', fontSize: '14px' }}>
+      <footer style={{ borderTop: '1px solid #FFEDD5', padding: '32px 20px', textAlign: 'center', color: '#A1A1AA', fontSize: '14px', backgroundColor: '#FFFFFF' }}>
         <p style={{ margin: 0 }}>© {new Date().getFullYear()} Cuerdas Locales — Sesiones Acústicas Itinerantes.</p>
       </footer>
 
