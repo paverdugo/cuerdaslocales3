@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 
 const COLORES = {
-  fondoPrincipal: '#F8FAFC',    // Blanco Fieltro / Claro
+  fondoPrincipal: '#F8FAFC',    // Blanco Claro
   fondoTarjeta:   '#FFFFFF',    // Blanco Puro
-  acentoPrincipal:'#2563EB',    // Azul Eléctrico Vibrante (Botones y destaques)
+  acentoPrincipal:'#2563EB',    // Azul Eléctrico
   acentoSecundario:'#3B82F6',   // Azul Vivo Secundario
-  textoPrincipal: '#0F172A',    // Azul Noche Profundo (Textos principales)
-  textoSecundario:'#475569',    // Gris Pizarra (Textos secundarios)
-  bordeSuave:     '#E2E8F0'     // Bordes gris claro neutros
+  textoPrincipal: '#0F172A',    // Azul Noche Profundo
+  textoSecundario:'#475569',    // Gris Pizarra
+  bordeSuave:     '#E2E8F0'     // Borde neutro
 };
 
 const OPCIONES_INSTRUMENTOS = [
@@ -48,6 +48,7 @@ export default function App() {
   const [errorMsg, setErrorMsg] = useState('');
   const [enviado, setEnviado] = useState(false);
   const [faqAbierto, setFaqAbierto] = useState(null);
+  const [mostrarModalLocal, setMostrarModalLocal] = useState(false);
 
   const [formData, setFormData] = useState({
     nombre: '',
@@ -95,6 +96,11 @@ export default function App() {
         : [...prev.instrumentos, instrumento];
       return { ...prev, instrumentos: nuevos };
     });
+  };
+
+  const seleccinarFechaYIrAFormulario = (fechaId) => {
+    setFormData((prev) => ({ ...prev, fecha_id: fechaId }));
+    scrollToSection('reservar');
   };
 
   const handleSubmit = async (e) => {
@@ -203,7 +209,7 @@ export default function App() {
   return (
     <div style={{ backgroundColor: COLORES.fondoPrincipal, color: COLORES.textoPrincipal, minHeight: '100vh', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
       
-      {/* 1. NAVBAR SUPERIOR */}
+      {/* 1. NAVBAR SUPERIOR CON MENÚ PARA LOCALES */}
       <nav style={{ 
         position: 'sticky', 
         top: 0, 
@@ -231,51 +237,132 @@ export default function App() {
           </span>
         </div>
 
-        <div style={{ display: 'flex', gap: '20px', fontSize: '14px', fontWeight: '600' }}>
+        <div style={{ display: 'flex', gap: '20px', alignItems: 'center', fontSize: '14px', fontWeight: '600' }}>
           <button onClick={() => scrollToSection('inicio')} style={{ background: 'none', border: 'none', color: COLORES.textoSecundario, cursor: 'pointer' }}>Inicio</button>
-          <button onClick={() => scrollToSection('reservar')} style={{ background: 'none', border: 'none', color: COLORES.textoSecundario, cursor: 'pointer' }}>Reservar</button>
-          <button onClick={() => scrollToSection('locales')} style={{ background: 'none', border: 'none', color: COLORES.textoSecundario, cursor: 'pointer' }}>Locales</button>
+          <button onClick={() => scrollToSection('fechas')} style={{ background: 'none', border: 'none', color: COLORES.textoSecundario, cursor: 'pointer' }}>Próximas Fechas</button>
           <button onClick={() => scrollToSection('faq')} style={{ background: 'none', border: 'none', color: COLORES.textoSecundario, cursor: 'pointer' }}>FAQ</button>
+          
+          {/* Opción destacada para Dueños de Restaurantes */}
+          <button 
+            onClick={() => setMostrarModalLocal(true)} 
+            style={{ 
+              backgroundColor: `${COLORES.acentoPrincipal}10`, 
+              color: COLORES.acentoPrincipal, 
+              border: `1px solid ${COLORES.acentoPrincipal}40`, 
+              padding: '8px 14px', 
+              borderRadius: '8px', 
+              fontWeight: '700', 
+              cursor: 'pointer' 
+            }}
+          >
+            🍽️ ¿Tienes un Restaurante?
+          </button>
         </div>
       </nav>
 
-      {/* 2. HERO SECTION */}
-      <section id="inicio" style={{ padding: '80px 20px', textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}>
-        <div style={{ display: 'inline-block', backgroundColor: `${COLORES.acentoSecundario}15`, color: COLORES.acentoSecundario, padding: '6px 16px', borderRadius: '20px', fontSize: '13px', fontWeight: '800', textTransform: 'uppercase', marginBottom: '16px' }}>
-          Música en Vivo & Jam Sessions
+      {/* 2. HERO SECTION / INVITACIÓN CÁLIDA A CANTANTES */}
+      <section id="inicio" style={{ padding: '80px 20px 40px 20px', textAlign: 'center', maxWidth: '850px', margin: '0 auto' }}>
+        <div style={{ display: 'inline-block', backgroundColor: `${COLORES.acentoPrincipal}15`, color: COLORES.acentoPrincipal, padding: '6px 16px', borderRadius: '20px', fontSize: '13px', fontWeight: '800', textTransform: 'uppercase', marginBottom: '16px' }}>
+          🎙️ Sesiones Acústicas Itinerantes
         </div>
         <h1 style={{ fontSize: '48px', fontWeight: '900', lineHeight: '1.15', marginBottom: '20px', letterSpacing: '-1px' }}>
-          La alegría de cantarle a los <span style={{ color: COLORES.acentoPrincipal }}>amigos</span>.
+          Trae la fogata de tu casa al escenario. <br />
+          <span style={{ color: COLORES.acentoPrincipal }}>Canta, toca y comparte entre amigos.</span>
         </h1>
-        <p style={{ fontSize: '18px', color: COLORES.textoSecundario, lineHeight: '1.6', marginBottom: '32px', maxWidth: '650px', margin: '0 auto 32px auto' }}>
-          Cuerdas Locales lleva la música acústica en vivo a distintos restaurantes y bares cada mes. Reserva tu espacio de tiempo, invita a tus amigos y comparte lo que más te apasiona.
+        <p style={{ fontSize: '18px', color: COLORES.textoSecundario, lineHeight: '1.6', marginBottom: '32px', maxWidth: '700px', margin: '0 auto 32px auto' }}>
+          ¿Siempre has querido cantar en un escenario pero sin la presión de un concierto formal? En <strong>Cuerdas Locales</strong> preparamos el ambiente, ponemos los instrumentos (guitarra, bajo, teclado y micrófonos) y te asignamos un bloque de 15 minutos para que disfrutes con tus seres queridos en los mejores restaurantes de la ciudad.
         </p>
-        <button
-          onClick={() => scrollToSection('reservar')}
-          style={{
-            backgroundColor: COLORES.acentoPrincipal,
-            color: '#FFFFFF',
-            padding: '16px 36px',
-            border: 'none',
-            borderRadius: '12px',
-            fontWeight: '800',
-            fontSize: '16px',
-            cursor: 'pointer',
-            boxShadow: '0 10px 25px -5px rgba(37, 99, 235, 0.3)'
-          }}
-        >
-          Reservar Mi Cupo Ahora 🎙️
-        </button>
+        <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
+          <button
+            onClick={() => scrollToSection('fechas')}
+            style={{
+              backgroundColor: COLORES.acentoPrincipal,
+              color: '#FFFFFF',
+              padding: '16px 36px',
+              border: 'none',
+              borderRadius: '12px',
+              fontWeight: '800',
+              fontSize: '16px',
+              cursor: 'pointer',
+              boxShadow: '0 10px 25px -5px rgba(37, 99, 235, 0.3)'
+            }}
+          >
+            Ver Próximas Fechas & Reservar 🎤
+          </button>
+        </div>
       </section>
 
-      {/* 3. FORMULARIO DE RESERVAS COMPLETO CON SUPABASE */}
+      {/* 3. BLOQUE DE PRÓXIMAS FECHAS DISPONIBLES */}
+      <section id="fechas" style={{ padding: '40px 20px 60px 20px', maxWidth: '900px', margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <h2 style={{ fontSize: '32px', fontWeight: '800', marginBottom: '8px' }}>Próximas Fechas Disponibles</h2>
+          <p style={{ color: COLORES.textoSecundario, fontSize: '15px' }}>Elige tu noche preferida y asegura tu lugar en el escenario.</p>
+        </div>
+
+        {cargandoFechas ? (
+          <p style={{ textAlign: 'center', color: COLORES.textoSecundario }}>Cargando calendario de eventos...</p>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+            {fechas.map((f) => {
+              const disponibles = f.cupos_disponibles;
+              const agotado = disponibles <= 0;
+              return (
+                <div 
+                  key={f.id} 
+                  style={{ 
+                    backgroundColor: COLORES.fondoTarjeta, 
+                    padding: '24px', 
+                    borderRadius: '16px', 
+                    border: `1px solid ${COLORES.bordeSuave}`, 
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.02)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between'
+                  }}
+                >
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                      <span style={{ fontSize: '13px', fontWeight: '700', color: COLORES.acentoPrincipal, backgroundColor: `${COLORES.acentoPrincipal}15`, padding: '4px 10px', borderRadius: '12px' }}>
+                        {f.hora}
+                      </span>
+                      <span style={{ fontSize: '12px', fontWeight: '600', color: agotado ? '#EF4444' : '#10B981' }}>
+                        {agotado ? 'AGOTADO' : `${disponibles} cupos libres`}
+                      </span>
+                    </div>
+                    <h3 style={{ fontSize: '18px', fontWeight: '800', margin: '0 0 6px 0' }}>{f.fecha}</h3>
+                    <p style={{ fontSize: '14px', color: COLORES.textoSecundario, margin: '0 0 16px 0' }}>📍 {f.lugar}</p>
+                  </div>
+                  <button
+                    disabled={agotado}
+                    onClick={() => seleccinarFechaYIrAFormulario(f.id)}
+                    style={{
+                      backgroundColor: agotado ? '#E2E8F0' : COLORES.acentoPrincipal,
+                      color: agotado ? '#94A3B8' : '#FFFFFF',
+                      border: 'none',
+                      padding: '10px 16px',
+                      borderRadius: '8px',
+                      fontWeight: '700',
+                      cursor: agotado ? 'not-allowed' : 'pointer',
+                      width: '100%'
+                    }}
+                  >
+                    {agotado ? 'Sin cupos' : 'Reservar esta fecha'}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </section>
+
+      {/* 4. FORMULARIO DE RESERVAS COMPLETO */}
       <section id="reservar" style={{ padding: '60px 20px', backgroundColor: COLORES.fondoPrincipal }}>
         <div style={{ maxWidth: '600px', margin: '0 auto', backgroundColor: COLORES.fondoTarjeta, padding: '36px', borderRadius: '24px', border: `1px solid ${COLORES.bordeSuave}`, boxShadow: '0 10px 30px rgba(0, 0, 0, 0.05)' }}>
           <h2 style={{ fontSize: '28px', fontWeight: '800', margin: '0 0 8px 0', textAlign: 'center' }}>
-            Inscripción de Músicos
+            Inscripción de Participantes
           </h2>
           <p style={{ color: COLORES.textoSecundario, fontSize: '14px', textAlign: 'center', marginBottom: '28px' }}>
-            Selecciona la fecha, el local socio y asegura tu bloque de presentación.
+            Completa tus datos para confirmar tu turno en el micrófono.
           </p>
 
           {enviado ? (
@@ -283,7 +370,7 @@ export default function App() {
               <div style={{ fontSize: '56px', marginBottom: '16px' }}>🎉</div>
               <h3 style={{ color: '#10B981', fontSize: '24px', margin: '0 0 12px 0', fontWeight: '800' }}>¡Reserva Confirmada!</h3>
               <p style={{ color: COLORES.textoSecundario, fontSize: '15px', lineHeight: '1.5', margin: '0 0 24px 0' }}>
-                Tu cupo ha sido guardado exitosamente. Te esperamos en la fecha y local seleccionados.
+                Tu turno ha sido guardado exitosamente. Te esperamos en el restaurante seleccionado.
               </p>
               <button
                 onClick={reiniciarFormulario}
@@ -352,23 +439,18 @@ export default function App() {
                   onChange={handleChange}
                   style={inputStyle}
                 >
-                  <option value="">-- Selecciona una sesión disponible --</option>
-                  {cargandoFechas ? (
-                    <option disabled>Cargando sesiones...</option>
-                  ) : (
-                    fechas.map((f) => {
-                      const totales = f.cupos_totales || 8;
-                      const disponibles = f.cupos_disponibles;
-                      return (
-                        <option key={f.id} value={f.id} disabled={disponibles <= 0}>
-                          {f.fecha} a las {f.hora} | {f.lugar} ({disponibles > 0 ? `${disponibles} de ${totales} cupos disponibles` : 'AGOTADO'})
-                        </option>
-                      );
-                    })
-                  )}
+                  <option value="">-- Selecciona una fecha --</option>
+                  {fechas.map((f) => {
+                    const disponibles = f.cupos_disponibles;
+                    return (
+                      <option key={f.id} value={f.id} disabled={disponibles <= 0}>
+                        {f.fecha} a las {f.hora} | {f.lugar} ({disponibles > 0 ? `${disponibles} cupos libres` : 'AGOTADO'})
+                      </option>
+                    );
+                  })}
                 </select>
                 {fechaSeleccionadaObj && (
-                  <div style={{ marginTop: '10px', padding: '10px 14px', backgroundColor: `${COLORES.acentoSecundario}10`, borderRadius: '10px', border: `1px solid ${COLORES.acentoSecundario}30`, fontSize: '13px', color: COLORES.acentoSecundario }}>
+                  <div style={{ marginTop: '10px', padding: '10px 14px', backgroundColor: `${COLORES.acentoSecundario}10`, borderRadius: '10px', border: `1px solid ${COLORES.acentoSecundario}30`, fontSize: '13px', color: COLORES.acentoPrincipal }}>
                     📍 <strong>Lugar del evento:</strong> {fechaSeleccionadaObj.lugar}
                   </div>
                 )}
@@ -460,38 +542,6 @@ export default function App() {
         </div>
       </section>
 
-      {/* 4. SECCIÓN LOCALES SOCIOS */}
-      <section id="locales" style={{ padding: '80px 20px', maxWidth: '900px', margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-          <h2 style={{ fontSize: '32px', fontWeight: '800', marginBottom: '12px' }}>
-            Un escenario itinerante 📍
-          </h2>
-          <p style={{ color: COLORES.textoSecundario, fontSize: '16px', maxWidth: '600px', margin: '0 auto' }}>
-            Cuerdas Locales no tiene un local fijo. Nos aliamos con los mejores restaurantes, bares y espacios culturales de la ciudad para crear experiencias únicas en cada edición.
-          </p>
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '24px' }}>
-          <div style={{ backgroundColor: COLORES.fondoTarjeta, padding: '24px', borderRadius: '20px', border: `1px solid ${COLORES.bordeSuave}`, boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
-            <div style={{ fontSize: '32px', marginBottom: '12px' }}>🍽️</div>
-            <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '8px' }}>Gastronomía & Coctelería</h3>
-            <p style={{ color: COLORES.textoSecundario, fontSize: '14px', margin: 0 }}>Cada local socio ofrece su carta para que tus acompañantes disfruten de una excelente cena mientras escuchan música en vivo.</p>
-          </div>
-
-          <div style={{ backgroundColor: COLORES.fondoTarjeta, padding: '24px', borderRadius: '20px', border: `1px solid ${COLORES.bordeSuave}`, boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
-            <div style={{ fontSize: '32px', marginBottom: '12px' }}>🔊</div>
-            <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '8px' }}>Sonido Profesional</h3>
-            <p style={{ color: COLORES.textoSecundario, fontSize: '14px', margin: 0 }}>Llevamos y preparamos el equipo acústico necesario para que te escuches increíble sin complicaciones técnicas.</p>
-          </div>
-
-          <div style={{ backgroundColor: COLORES.fondoTarjeta, padding: '24px', borderRadius: '20px', border: `1px solid ${COLORES.bordeSuave}`, boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
-            <div style={{ fontSize: '32px', marginBottom: '12px' }}>🤝</div>
-            <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '8px' }}>Comunidad Musical</h3>
-            <p style={{ color: COLORES.textoSecundario, fontSize: '14px', margin: 0 }}>Conoce a otros músicos de la zona, conecta para futuros proyectos y comparte el escenario en un ambiente cercano y amigable.</p>
-          </div>
-        </div>
-      </section>
-
       {/* 5. SECCIÓN FAQ (PREGUNTAS FRECUENTES) */}
       <section id="faq" style={{ padding: '80px 20px', backgroundColor: COLORES.fondoPrincipal }}>
         <div style={{ maxWidth: '750px', margin: '0 auto' }}>
@@ -534,7 +584,65 @@ export default function App() {
         </div>
       </section>
 
-      {/* 6. FOOTER */}
+      {/* 6. MODAL PARA DUEÑOS DE RESTAURANTES */}
+      {mostrarModalLocal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          backgroundColor: 'rgba(15, 23, 42, 0.6)',
+          backdropFilter: 'blur(4px)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000,
+          padding: '20px'
+        }}>
+          <div style={{
+            backgroundColor: '#FFFFFF',
+            borderRadius: '24px',
+            padding: '36px',
+            maxWidth: '500px',
+            width: '100%',
+            position: 'relative',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.15)'
+          }}>
+            <button 
+              onClick={() => setMostrarModalLocal(false)}
+              style={{ position: 'absolute', top: '20px', right: '20px', border: 'none', background: 'none', fontSize: '20px', cursor: 'pointer', color: COLORES.textoSecundario }}
+            >
+              ✕
+            </button>
+            <div style={{ fontSize: '36px', marginBottom: '12px' }}>🍽️</div>
+            <h3 style={{ fontSize: '22px', fontWeight: '800', margin: '0 0 12px 0' }}>Lleva Cuerdas Locales a tu Restaurante</h3>
+            <p style={{ color: COLORES.textoSecundario, fontSize: '14px', lineHeight: '1.6', marginBottom: '24px' }}>
+              Atrae mesas llenas en tus días de menor flujo. Nos encargamos de todo el equipamiento técnico, instrumentos, sonido y la gestión de inscripciones.
+            </p>
+            <a
+              href="https://wa.me/56912345678?text=Hola,%20tengo%20un%20restaurante%20y%20me%20gustaria%20llevar%20Cuerdas%20Locales"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'block',
+                backgroundColor: '#10B981',
+                color: '#FFFFFF',
+                textAlign: 'center',
+                padding: '14px',
+                borderRadius: '12px',
+                fontWeight: '800',
+                textDecoration: 'none',
+                fontSize: '15px'
+              }}
+            >
+              Hablar con Producción por WhatsApp 📲
+            </a>
+          </div>
+        </div>
+      )}
+
+      {/* 7. FOOTER */}
       <footer style={{ borderTop: `1px solid ${COLORES.bordeSuave}`, padding: '32px 20px', textAlign: 'center', color: COLORES.textoSecundario, fontSize: '14px', backgroundColor: '#FFFFFF' }}>
         <p style={{ margin: 0 }}>© {new Date().getFullYear()} Cuerdas Locales — Sesiones Acústicas Itinerantes.</p>
       </footer>
